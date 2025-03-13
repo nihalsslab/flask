@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>360 Degree View</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+    <div class="main-container">
+        <a href="/" style="z-index: 100; position: absolute; top: 5%;">Back to Home Page</a>
+        <div class="image-container">
+            <a class="btn" href="/map">Map</a>
+        </div>
+        <div id="panorama-container" class="panorama-container"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js" integrity="sha512-uWKImujbh9CwNa8Eey5s8vlHDB4o1HhrVszkympkm5ciYTnUEQv3t4QHU02CUqPtdKTg62FsHo12x63q6u0wmg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ url_for('static', filename='js/panolens.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Define the available panoramas
+        const panoramas = {
+            "right22": new PANOLENS.ImagePanorama("{{ url_for('static', filename='images/classroom/right22.jpg') }}"),
+            // Add more panoramas if needed, e.g.,
+            // "left1": new PANOLENS.ImagePanorama("{{ url_for('static', filename='images/classroom/left1.jpg') }}")
+        };
+
+        // Function to get the URL parameter value by name
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get the panorama parameter from the URL
+        const panoramaKey = getUrlParameter('panorama');
+
+        // Initialize the PANOLENS viewer
+        const viewer = new PANOLENS.Viewer({
+            container: document.getElementById('panorama-container'),
+            output: 'console'
+        });
+
+        // If the panorama exists, load it
+        if (panoramaKey && panoramas[panoramaKey]) {
+            viewer.add(panoramas[panoramaKey]);
+        } else {
+            console.error('Panorama not found for key:', panoramaKey);
+        }
+    </script>
+</body>
+</html>
